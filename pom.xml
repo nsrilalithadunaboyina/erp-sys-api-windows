@@ -14,7 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<app.runtime>4.8.1</app.runtime>
-		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+		<mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
 	</properties>
 
 	<build>
@@ -36,6 +36,7 @@
 							<artifactId>mssql-jdbc</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
+					<classifier>mule-application</classifier>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -80,7 +81,7 @@
 		<dependency>
 			<groupId>b2095524-3641-4ce3-a22e-a8bcf3910384</groupId>
 			<artifactId>syteline-erp-system-api</artifactId>
-			<version>1.0.22</version>
+			<version>1.0.34</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>

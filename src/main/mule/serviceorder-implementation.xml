@@ -571,5 +571,61 @@ output application/json
 <logger level="INFO" doc:name="Logger" doc:id="ca327f9c-f7fe-4a73-b2d7-1a18076ea50f" message="#[flow.name] :: End :: #[now()] :: Payload :: #[payload]"/>
 </sub-flow>
 	
+	<sub-flow name="getManualServiceOrderLineItems" doc:id="83642ca6-3e57-434d-aba0-8b931cb1233e">
+
+    <logger level="INFO"
+            message='#[flow.name] :: Start :: #[now()] "This is the GetManualServiceOrderLineItems has been started"'/>
+
+    <ee:transform doc:name="Prepare Query">
+        <ee:message>
+            <ee:set-payload><![CDATA[
+%dw 2.0
+output application/json
+---
+{
+  query: Mule::p('queries.serviceOrderLine.getManualServiceOrderlineItems'),
+  	params:{
+     lastSyncDateTime: vars.lastSyncDateTime ,
+      currentSyncDateTime: vars.currentSyncDateTime
+      }
+      }
+
+            ]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+
+    <logger level="INFO" doc:name="Logger" doc:id="c06ed75a-ffc7-49e6-882c-196969f6d645" message='"The flow reference will fetch into db"'/>
+		<flow-ref name="dbOperations-selectQueryWithParams" doc:id="50978e11-d918-4367-9eff-a650c1df9c15"/>
+
+    <ee:transform doc:name="Transform Response">
+        <ee:message>
+            <ee:set-payload><![CDATA[
+%dw 2.0
+output application/json
+---
+{
+  serviceOrderLineItems: payload map (item) -> {
+    sro_num: item.sro_num,
+    sro_line: item.sro_line,
+    site_ref: item.site_ref,
+    total_price: item.total_price,
+    total_cost_misc: item.total_cost_misc,
+    description: item.description,
+    line_type: item.line_type,
+    product_code: item.product_code,
+    CreateDate: item.CreateDate,
+    ref_num: item.ref_num,
+    Uf_SF_ExternalID: item.Uf_SF_ExternalID,
+    Uf_SFWorkOrderLine: item.Uf_SFWorkOrderLine
+  }
+}
+            ]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+
+    <logger level="INFO"
+            message='#[flow.name]"End Logger"'/>
+
+</sub-flow>
 	
 	</mule>

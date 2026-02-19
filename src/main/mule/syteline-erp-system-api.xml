@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
     
-    <apikit:config name="syteline-erp-system-api-config" api="resource::b2095524-3641-4ce3-a22e-a8bcf3910384:syteline-erp-system-api:1.0.22:raml:zip:syteline-erp-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="syteline-erp-system-api-config" api="resource::b2095524-3641-4ce3-a22e-a8bcf3910384:syteline-erp-system-api:1.0.34:raml:zip:syteline-erp-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="syteline-erp-system-api-main">
         <http:listener config-ref="syteline-erp-system-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -172,5 +172,19 @@ output application/json
         <logger level="INFO" doc:name="Create Error log" doc:id="74f7ee3d-1418-4958-b746-a94450b934e5" message="putServiceOrderslineItembyExternalId-Started#[(now)]" />
         <flow-ref doc:name="Process Error Log Asynchronously" doc:id="process-error-log-async" name="ErrorLogs-CreateErrorLog" />
     </flow>
+    	<flow name="get:\serviceOrders\manualServiceorderLineitems:syteline-erp-system-api-config">
+	   <logger level="INFO" doc:name="StartLogger" doc:id="611e521a-2fba-430b-982c-e2e22f77192d" message='#[flow.name] :: Start :: #[now()]"This the start logger"' />
+	        <ee:transform doc:name="currentSyncDate &amp; lastSyncDate Variable" doc:id="3b0d9b16-5863-4af8-85bf-682581fb84dc" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="currentSyncDateTime" ><![CDATA[(attributes.queryParams.currentSyncDateTime  as DateTime) as String {format: "yyyy-MM-dd'T'HH:mm:ss"}]]></ee:set-variable>
+					<ee:set-variable variableName="lastSyncDateTime" ><![CDATA[ (attributes.queryParams.lastSyncDateTime  as DateTime) as String {format: "yyyy-MM-dd'T'HH:mm:ss"}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="INFO" doc:name="flow_call_logger" doc:id="de524199-3c56-447d-91a6-0110deddaf68" message='"this flow reference  the getmanualseerviceorderloneitems"'/>
+		<flow-ref doc:name="getManualServiceordeLineItems" doc:id="5b599cb3-45b6-4e00-830d-13b920834db7" name="getManualServiceOrderLineItems" />
+	        <logger level="INFO" doc:name="End_Logger" doc:id="09649b4a-b381-498c-864a-14e585c97497" message="#[flow.name] :: End :: #[now()] :: Payload :: #[payload]" />  
+	    </flow>
 
 </mule>
